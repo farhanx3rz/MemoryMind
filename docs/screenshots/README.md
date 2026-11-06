@@ -16,11 +16,11 @@ This directory contains real application screenshots showcasing MemoryMind's Chr
 
 ## Usage in Documentation
 
-These screenshots are displayed in the root [README.md](../../README.md) using relative markdown paths:
+These screenshots are referenced from the repository root [README.md](../../README.md) as `docs/screenshots/<filename>`:
 
 ```markdown
-![MemoryMind Main Interface](docs/screenshots/01-main-interface.png)
-![MemoryMind AI Provider Settings](docs/screenshots/02-ai-provider-settings.png)
-![MemoryMind Webpage Saved](docs/screenshots/03-webpage-saved.png)
+![MemoryMind Main Interface](01-main-interface.png)
+![MemoryMind AI Provider Settings](02-ai-provider-settings.png)
+![MemoryMind Webpage Saved](03-webpage-saved.png)
 ```
 

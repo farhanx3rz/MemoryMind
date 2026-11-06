@@ -54,6 +54,8 @@ pip install -r requirements.txt
 2. Open `backend/.env` and configure your preferred AI provider:
    ```env
    # Select your active provider: grok | gemini | openai | anthropic | ollama | none
+   # .env.example pre-configures grok. If LLM_PROVIDER is unset or empty,
+   # backend/app/config.py safely defaults to "none" (Offline / Echo Mode).
    LLM_PROVIDER=grok
 
    # Enter credentials for your selected provider:
@@ -66,7 +68,10 @@ pip install -r requirements.txt
    HF_TOKEN=
    ```
 
-> **Note on Offline Testing:** Setting `LLM_PROVIDER=none` runs MemoryMind in **Offline / Echo Mode**, returning the best matching memory excerpt directly without requiring an external LLM API key.
+> **Note on Provider Defaults & Offline Testing:**
+> - When using `.env.example`, `LLM_PROVIDER` is set to `grok` and requires a valid `XAI_API_KEY`.
+> - If `LLM_PROVIDER` is unset or omitted from the environment, `backend/app/config.py` defaults to `none` (Offline / Echo Mode).
+> - Setting `LLM_PROVIDER=none` explicitly in `backend/.env` runs MemoryMind in **Offline / Echo Mode**, returning the best matching memory excerpt directly without requiring an external LLM API key.
 
 ---
 

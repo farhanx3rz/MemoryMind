@@ -113,12 +113,25 @@ def evaluate_model(
             },
         }
 
+    model_dir_repr = "backend/ml/models/recall-topic-classifier"
+    if classifier.model_dir:
+        resolved_path = Path(classifier.model_dir).resolve()
+        try:
+            if config.BACKEND_DIR.parent in resolved_path.parents:
+                model_dir_repr = str(resolved_path.relative_to(config.BACKEND_DIR.parent)).replace("\\", "/")
+            elif config.BACKEND_DIR in resolved_path.parents:
+                model_dir_repr = f"backend/{resolved_path.relative_to(config.BACKEND_DIR)}".replace("\\", "/")
+            else:
+                model_dir_repr = resolved_path.name
+        except Exception:
+            model_dir_repr = "backend/ml/models/recall-topic-classifier"
+
     report_dict: dict[str, Any] = {
         "evaluation_split": split_name,
         "sample_count": len(rows),
         "threshold": threshold,
         "random_seed": config.SEED,
-        "model_dir": str(classifier.model_dir),
+        "model_dir": model_dir_repr,
         "model_available": classifier.available,
         "labels": labels_order,
         "metrics": {

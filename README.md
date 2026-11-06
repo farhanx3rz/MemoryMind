@@ -39,9 +39,10 @@ pip install -r requirements.txt
 copy .env.example backend\.env
 ```
 
-> **Provider Configuration & Offline Mode:**
-> - `backend/.env.example` defaults to `LLM_PROVIDER=grok`. If you have an xAI Grok API key, add `XAI_API_KEY=your_key_here` to `backend/.env`.
-> - **Offline / Echo Mode (Zero API Keys):** Set `LLM_PROVIDER=none` in `backend/.env`. This enables offline testing of the hybrid vector retrieval engine by echoing the top matching memory passages directly with relevance scores. LLM answer synthesis and dynamic concept tags require a valid provider key.
+> **LLM Provider Defaults & Offline Mode:**
+> - **With `.env.example`:** Copying `.env.example` pre-selects `LLM_PROVIDER=grok`. If you use this configuration, add your `XAI_API_KEY=your_key_here` to `backend/.env`.
+> - **Without `.env` or Unset:** If `LLM_PROVIDER` is not set in the environment, `backend/app/config.py` safely defaults to `LLM_PROVIDER=none` (Offline / Echo Mode).
+> - **Explicit Offline / Echo Mode:** Set `LLM_PROVIDER=none` in `backend/.env` to test hybrid vector retrieval with zero API keys by returning top matching memory passages directly with relevance scores. LLM answer synthesis and dynamic concept tags require a configured provider key.
 > - Supported providers: `grok` (`grok-4.7`), `gemini` (`gemini-3.5-flash`), `openai` (`gpt-4o-mini`), `anthropic` (`claude-3-5-haiku-latest`), `ollama` (`llama3.1`), or `none`.
 
 ```powershell
@@ -50,7 +51,7 @@ python backend/run_server.py
 ```
 
 > **First-Launch Model Downloads:**
-> During initial server startup, MemoryMind downloads the Sentence Transformers embedding model (`all-MiniLM-L6-v2`, ~90 MB) and automatically fetches the fine-tuned DistilBERT weights from Hugging Face Hub ([`farhanx3rz/memorymind-classifier`](https://huggingface.co/farhanx3rz/memorymind-classifier), ~268 MB) into local cache. Initial launch takes 1–2 minutes depending on bandwidth; subsequent starts are instant.
+> On initial startup, MemoryMind may download the Sentence Transformers embedding model (`all-MiniLM-L6-v2`, ~90 MB) and fetch the fine-tuned DistilBERT weights from Hugging Face Hub ([`farhanx3rz/memorymind-classifier`](https://huggingface.co/farhanx3rz/memorymind-classifier), ~268 MB) if they are not already cached locally. Download and initialization times vary depending on your network connection speed and hardware. Once downloaded, models are cached locally so subsequent launches avoid re-downloading.
 
 4. **Load the Chrome Extension:**
    - Open Google Chrome and navigate to `chrome://extensions/`.
@@ -344,14 +345,17 @@ HF_MODEL_REVISION=main
 HF_TOKEN=
 ```
 
-> **Quick Start without an API Key:** Set `LLM_PROVIDER=none`. MemoryMind will operate in **Offline / Echo Mode**, testing hybrid vector retrieval by returning the most relevant memory passages directly.
+> **Provider Configuration & Offline Mode:**
+> - When using `.env.example`, `LLM_PROVIDER` is set to `grok` and expects an `XAI_API_KEY`.
+> - If `LLM_PROVIDER` is unset or omitted from the environment, `backend/app/config.py` safely defaults to `"none"` (Offline / Echo Mode).
+> - Set `LLM_PROVIDER=none` explicitly in `backend/.env` to run MemoryMind in **Offline / Echo Mode**, testing hybrid vector retrieval by returning the most relevant memory passages directly with zero external API calls.
 
 ### Step 4: Start the FastAPI Backend Server
 ```powershell
 python backend/run_server.py
 ```
 - The backend initializes at `http://127.0.0.1:8000`.
-- **Hugging Face Auto-Download:** If the 268 MB DistilBERT weights are not cached locally, MemoryMind automatically downloads and verifies them from Hugging Face into `backend/ml/models/recall-topic-classifier/`.
+- **Model Downloads & Caching:** If models are not present locally, MemoryMind downloads the Sentence Transformers embeddings and automatically fetches the fine-tuned DistilBERT weights into `backend/ml/models/recall-topic-classifier/`. Download times depend on network bandwidth. Subsequent launches load cached weights locally.
 - Interactive Swagger API docs are available at `http://127.0.0.1:8000/docs`.
 
 ### Step 5: Install the Chrome Extension
@@ -371,7 +375,7 @@ The multi-label topic classifier is hosted separately on the Hugging Face Model 
 
 ### Why Decouple the Model?
 - **Lightweight Repository:** Standard Git repositories are designed for code, not multi-hundred megabyte binaries. Decoupling saves 268 MB of binary bloat.
-- **Automatic Caching:** Download occurs only once during first run; subsequent server restarts reuse the cached files instantly with zero network overhead.
+- **Automatic Caching:** Download occurs only once during initial setup; subsequent server restarts reuse the cached files locally without re-downloading over the network.
 - **Resilient Fallback:** If internet access is unavailable, MemoryMind gracefully reuses the existing cached model without throwing errors.
 - **Configurable Revisions:** Pin to specific commits or release tags simply by setting `HF_MODEL_REVISION` in `.env`.
 
@@ -386,7 +390,7 @@ $env:PYTHONPATH="backend"
 pytest backend/ml/tests/ backend/app/tests/ -v
 ```
 
-### Verified Test Results: **167 Passed, 2 Skipped, 117 Subtests Passed (100% executable pass rate)**
+### Verified Test Results: **167 Passed, 2 Skipped, 117 Subtests Passed**
 - **Machine Learning Subsystem (`backend/ml/tests/`): 20 passed**
   - `test_hf_hub.py`: **9 passed** (Caching, offline fallback, mock download, rollback, validation)
   - `test_ml.py`: **11 passed** (Leak-free stratified splitting, multilabel encoding, deduplication)
@@ -395,6 +399,7 @@ pytest backend/ml/tests/ backend/app/tests/ -v
   - `test_citation_schema.py`: **11 passed** (Citation schema validation, report compatibility)
   - `test_e2e_regression.py`: **6 passed** (Remember text/webpage/PDF, ask, stream, job flow)
   - `test_hybrid_retrieval.py`: **10 passed** (4-signal fusion, source grouping, concept aggregation)
+  - `test_integration_workflow.py`: **2 skipped** (`test_job_workflow_with_citations` and `test_citation_schema_in_api` are live integration tests that require an actively running backend server on port 8000; when run against offline unit suites, they skip cleanly via `httpx.ConnectError`)
   - `test_optimization_and_reproduction.py`: **14 passed** (Typo tolerance, chunk sampling, caching)
   - `test_pdf_formatting.py`: **12 passed** (ReportLab layout, bibliography generation)
   - `test_pdf_summarization.py`: **12 passed** (Multi-page extraction, section structuring)
@@ -406,12 +411,14 @@ pytest backend/ml/tests/ backend/app/tests/ -v
   - `test_synthesis_timeout_retry.py`: **13 passed** (Exponential backoff, timeout handling)
   - `test_webpage_pipeline.py`: **14 passed** (Trafilatura boilerplate cleanup, chunk preservation)
 
+> **Test Scope & Qualification:** These automated tests verify algorithmic logic, regression safety, input boundary sanitization, and interface contracts under local development conditions. They do not constitute an evaluation of multi-tenant load or distributed production deployment.
+
 ---
 
 ## 9. Limitations
 
 - **Local Backend Dependency:** MemoryMind currently requires the local FastAPI Python backend running on your machine to perform embeddings, vector search, and model inference.
-- **First-Run Download Time:** The first launch requires an active internet connection to download the 268 MB DistilBERT weights from Hugging Face (~1–2 minutes depending on bandwidth).
+- **First-Run Model Downloads:** Initial launch may require downloading model weights (~90 MB embedding model and ~268 MB classifier from Hugging Face Hub); download duration depends on network connection speed and hardware. Once cached locally, subsequent startups bypass downloading.
 - **Single-User Architecture:** Designed for personal developer/researcher productivity on local storage; not intended as a multi-tenant enterprise SaaS in its current state.
 
 ---

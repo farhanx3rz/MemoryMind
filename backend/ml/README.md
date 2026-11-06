@@ -6,7 +6,7 @@ It is deliberately separate from the RAG stack:
 
 - **Topic classifier (`distilbert-base-uncased`):** assigns explicit topic/tag probabilities across a 17-label technical taxonomy locally on CPU.
 - **Sentence Transformer (`all-MiniLM-L6-v2`):** creates dense 384-dimensional semantic vectors for ChromaDB cosine similarity retrieval.
-- **Configured LLM Gateway:** generates the final natural-language answer grounded strictly in retrieved evidence (supporting Grok default, Gemini, OpenAI, Anthropic Claude, Ollama, or Offline / Echo mode), and can optionally extract dynamic concept tags when enabled.
+- **Configured LLM Gateway:** generates the final natural-language answer grounded strictly in retrieved evidence (pre-configured to Grok in `.env.example`, with fallback to Offline / Echo mode when `LLM_PROVIDER` is unconfigured or set to `none`; also supporting Gemini, OpenAI, Anthropic Claude, and Ollama), and can optionally extract dynamic concept tags when enabled.
 
 External LLMs are not used to generate topic taxonomy tags; classification runs 100% locally via the fine-tuned DistilBERT model.
 

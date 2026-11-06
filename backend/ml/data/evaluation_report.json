@@ -3,7 +3,7 @@
   "sample_count": 741,
   "threshold": 0.35,
   "random_seed": 42,
-  "model_dir": "C:\\Users\\SUKUNA\\Desktop\\MKV\\backend\\ml\\models\\recall-topic-classifier",
+  "model_dir": "backend/ml/models/recall-topic-classifier",
   "model_available": true,
   "labels": [
     "Artificial Intelligence",

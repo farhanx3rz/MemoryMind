@@ -84,10 +84,11 @@ returned with matches so an answer can be traced back to the original page.
 ## Dynamic tags
 
 Each selected memory or full webpage receives one metadata extraction call
-when `DYNAMIC_TAGS_ENABLED=true` using the configured LLM provider (defaults
-to Grok `grok-4.7`). The LLM returns 3-8 concise concepts such as
-`ChromaDB`, `vector database`, `embeddings`, or `Docker`. These are stored
-separately from the fixed DistilBERT topic taxonomy.
+when `DYNAMIC_TAGS_ENABLED=true` using the active LLM provider (pre-configured to
+Grok `grok-4.7` in `.env.example`). When `LLM_PROVIDER` is unconfigured or set to
+`none`, dynamic tag extraction is bypassed. The configured LLM returns 3-8 concise
+concepts such as `ChromaDB`, `vector database`, `embeddings`, or `Docker`. These
+are stored separately from the fixed DistilBERT topic taxonomy.
 
 ## Hybrid retrieval
 
@@ -125,11 +126,14 @@ only a small number of parent documents while testing.
 
 ## Grounded RAG synthesis
 
-The configured LLM (defaults to Grok `grok-4.7`, or Gemini, OpenAI, Claude, Ollama, none)
-receives only the top hybrid-ranked memories plus their source title/URL.
+When an active LLM provider is configured (`.env.example` pre-selects Grok
+`grok-4.7`, while unconfigured environments safely fall back to `none` / Echo mode),
+the active LLM receives only the top hybrid-ranked memories plus their source title/URL.
 The system prompt tells the LLM to answer only from those memories and cite the
-retrieved source numbers inline as `[1]`, `[2]`, etc. The Chrome extension also
-renders the source links from the returned memory metadata.
+retrieved source numbers inline as `[1]`, `[2]`, etc. In Offline / Echo mode
+(`LLM_PROVIDER=none`), the top retrieved memory excerpt is returned directly without
+requiring external LLM synthesis. The Chrome extension renders the source links
+from the returned memory metadata.
 
 ## Endpoints
 
