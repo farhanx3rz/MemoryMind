@@ -1,0 +1,93 @@
+# ==============================================================================
+# MemoryMind — Git Ignore Rules
+# ==============================================================================
+
+# Secrets and Environment Variables (NEVER commit secrets or credentials)
+.env
+.env*.local
+.env.production
+.env.development
+*.env
+backend/.env
+backend/.env*.local
+!.env.example
+!backend/.env.example
+
+# Python Bytecode & Runtime Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & Coverage
+.pytest_cache/
+**/.pytest_cache/
+**/.pytest_cache/**
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Logs & Temporary Files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vector Database, SQLite Indices, and Job Sessions (regenerated at runtime)
+backend/data/chroma/
+backend/data/*.sqlite3*
+backend/data/jobs/
+data/chroma/
+data/*.sqlite3*
+data/jobs/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+
+# Large Machine Learning Weights & Caches
+# (Weights are automatically fetched on demand from Hugging Face: farhanx3rz/memorymind-classifier)
+backend/ml/models/recall-topic-classifier/*.safetensors
+backend/ml/models/recall-topic-classifier/*.bin
+backend/ml/models/recall-topic-classifier/.cache/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*staging*
+
+# Browser Extension Build Artifacts
+extension/dist/
+extension/*.crx
+extension/*.zip
+
+# IDE & Editor Metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

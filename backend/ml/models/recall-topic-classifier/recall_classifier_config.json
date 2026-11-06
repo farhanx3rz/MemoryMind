@@ -1,0 +1,47 @@
+{
+  "model_name": "distilbert-base-uncased",
+  "labels": [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Deep Learning",
+    "Large Language Models",
+    "RAG",
+    "Information Retrieval",
+    "Data Science",
+    "Programming",
+    "Web Development",
+    "Databases",
+    "Cloud Computing",
+    "Cybersecurity",
+    "Mathematics",
+    "Science",
+    "Business",
+    "Other",
+    "History"
+  ],
+  "threshold": 0.35,
+  "threshold_selection": "global threshold selected on validation set by micro F1",
+  "validation_micro_f1_at_selected_threshold": 0.9168466522678186,
+  "max_length": 256,
+  "chunk_size": 220,
+  "chunk_overlap": 40,
+  "top_k_chunks": 3,
+  "learning_rate": 2e-05,
+  "batch_size": 8,
+  "epochs": 3,
+  "seed": 42,
+  "dataset_samples": 5000,
+  "split_sizes": {
+    "train": 3500,
+    "validation": 750,
+    "test": 750
+  },
+  "training_seconds": 501.03,
+  "test_metrics": {
+    "test_micro_f1": 0.9336165693043016,
+    "test_macro_f1": 0.9326043536162869,
+    "test_precision": 0.9391025641025641,
+    "test_recall": 0.928194297782471
+  },
+  "note": "Starter dataset; expand with real labeled webpage data before making strong generalization claims."
+}

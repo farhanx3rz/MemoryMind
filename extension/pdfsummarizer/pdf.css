@@ -1,0 +1,267 @@
+/* MemoryMind MKVII — PDF Summarizer */
+
+:root {
+  --bg: #F3F1F6;
+  --surface: #FFFFFF;
+  --surface-secondary: #E9E5F0;
+  --surface-tertiary: #DFD9E8;
+  --text: #302C3B;
+  --muted: #777183;
+  --border: #DCD6E6;
+  --border-focus: #8270B8;
+  --primary: #8270B8;
+  --primary-hover: #7260A8;
+  --primary-focus-ring: rgba(130, 112, 184, 0.22);
+  --success-bg: #E9F5EE;
+  --success-text: #2E7D4F;
+  --success-border: #C6E7D2;
+  --danger-bg: #FCE8E6;
+  --danger-text: #C0392B;
+  --danger-border: #F5C2BE;
+  --shadow: 0 1px 3px rgba(48, 44, 59, 0.05);
+  --shadow-subtle: 0 1px 2px rgba(48, 44, 59, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.container {
+  padding: 32px 20px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin: 0 0 20px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: 'Inter', inherit;
+  font-size: 13.5px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px var(--primary-focus-ring);
+}
+
+input[type="file"] {
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--text);
+  font-family: 'Inter', inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button {
+  margin-top: 10px;
+  padding: 9px 16px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-family: 'Inter', inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+button.primary {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+button.secondary {
+  background: var(--surface-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--surface-tertiary);
+  border-color: #CEC7DA;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-list {
+  margin-top: 12px;
+}
+
+.pdf-item {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-shadow: var(--shadow-subtle);
+}
+
+.pdf-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.pdf-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 6px;
+  background: var(--surface-secondary);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.badge.ok {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+.badge.err {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.pdf-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.small-btn {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0;
+}
+
+.small-btn:hover {
+  background: var(--surface-tertiary);
+}
+
+.status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.error {
+  margin-top: 10px;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: var(--danger-text);
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 16px 12px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .pdf-item {
+    flex-direction: column;
+  }
+
+  .pdf-actions {
+    margin-top: 8px;
+    align-items: flex-start;
+  }
+}

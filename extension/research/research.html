@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Research Summarizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600;9..40,700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="research.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Research Summarizer</h1>
+            <p class="subtitle">Synthesize webpages, PDFs, and mixed sources into one report</p>
+        </header>
+
+        <section class="panel source-section">
+            <h2>1. Add Sources</h2>
+            
+            <div class="source-tabs">
+                <button class="tab-btn active" data-tab="urls">URLs</button>
+                <button class="tab-btn" data-tab="current">Current Page</button>
+                <button class="tab-btn" data-tab="pdfs">Upload PDFs</button>
+            </div>
+
+            <div class="tab-content active" id="urls-tab">
+                <textarea id="urls-input" rows="5" placeholder="Paste URLs (one per line)"></textarea>
+                <button id="add-urls-btn" class="btn-secondary">Add URLs</button>
+            </div>
+
+            <div class="tab-content" id="current-tab">
+                <p>Current page: <span id="current-page-title">Loading...</span></p>
+                <button id="add-current-btn" class="btn-secondary">Add Current Page</button>
+            </div>
+
+            <div class="tab-content" id="pdfs-tab">
+                <input id="pdf-input" type="file" accept="application/pdf" multiple />
+                <button id="add-pdfs-btn" class="btn-secondary">Add PDFs</button>
+            </div>
+
+            <div id="sources-list" class="sources-list"></div>
+        </section>
+
+        <section class="panel config-section">
+            <h2>2. Configure Report</h2>
+            
+            <label>Summary Style</label>
+            <select id="summary-style">
+                <option value="quick">Quick Overview (concise)</option>
+                <option value="detailed" selected>Detailed Report (comprehensive)</option>
+                <option value="notes">Study Notes (revision-friendly)</option>
+            </select>
+
+            <label>Topic or Focus (optional)</label>
+            <input id="topic-input" type="text" placeholder="e.g., Machine learning applications in healthcare" />
+
+            <label>Maximum Summary Length</label>
+            <input id="max-length-input" type="number" value="2000" min="500" max="5000" />
+        </section>
+
+        <section class="panel action-section">
+            <button id="generate-btn" class="btn-primary" disabled>Generate Report</button>
+        </section>
+
+        <section class="panel progress-section" hidden>
+            <h2>Progress</h2>
+            <div id="progress-bar" class="progress-bar">
+                <div id="progress-fill" style="width: 0%"></div>
+            </div>
+            <p id="progress-message">Starting...</p>
+        </section>
+
+        <section class="panel results-section" hidden>
+            <h2>Results</h2>
+            <p id="result-message"></p>
+            <button id="open-pdf-btn" class="btn-primary" hidden>Open PDF in New Tab</button>
+            <button id="download-pdf-btn" class="btn-secondary" hidden>Download PDF</button>
+        </section>
+
+        <div id="error" class="error" hidden></div>
+    </div>
+
+    <script type="module" src="research.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+{
+  "evaluation_split": "test",
+  "sample_count": 741,
+  "threshold": 0.35,
+  "random_seed": 42,
+  "model_dir": "C:\\Users\\SUKUNA\\Desktop\\MKV\\backend\\ml\\models\\recall-topic-classifier",
+  "model_available": true,
+  "labels": [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Deep Learning",
+    "Large Language Models",
+    "RAG",
+    "Information Retrieval",
+    "Data Science",
+    "Programming",
+    "Web Development",
+    "Databases",
+    "Cloud Computing",
+    "Cybersecurity",
+    "Mathematics",
+    "Science",
+    "Business",
+    "Other",
+    "History"
+  ],
+  "metrics": {
+    "subset_accuracy": 0.9123,
+    "hamming_loss": 0.0069,
+    "hamming_accuracy": 0.9931,
+    "micro_f1": 0.9529,
+    "macro_f1": 0.9492,
+    "weighted_f1": 0.9532,
+    "micro_precision": 0.9473,
+    "macro_precision": 0.9497,
+    "weighted_precision": 0.9495,
+    "micro_recall": 0.9586,
+    "macro_recall": 0.9501,
+    "weighted_recall": 0.9586
+  },
+  "per_class_metrics": {
+    "Artificial Intelligence": {
+      "precision": 0.9844,
+      "recall": 0.9844,
+      "f1": 0.9844,
+      "support": 64,
+      "confusion_matrix": {
+        "true_negative": 676,
+        "false_positive": 1,
+        "false_negative": 1,
+        "true_positive": 63
+      }
+    },
+    "Machine Learning": {
+      "precision": 0.9314,
+      "recall": 0.9896,
+      "f1": 0.9596,
+      "support": 96,
+      "confusion_matrix": {
+        "true_negative": 638,
+        "false_positive": 7,
+        "false_negative": 1,
+        "true_positive": 95
+      }
+    },
+    "Deep Learning": {
+      "precision": 0.9683,
+      "recall": 0.9839,
+      "f1": 0.976,
+      "support": 62,
+      "confusion_matrix": {
+        "true_negative": 677,
+        "false_positive": 2,
+        "false_negative": 1,
+        "true_positive": 61
+      }
+    },
+    "Large Language Models": {
+      "precision": 0.8387,
+      "recall": 0.9455,
+      "f1": 0.8889,
+      "support": 55,
+      "confusion_matrix": {
+        "true_negative": 676,
+        "false_positive": 10,
+        "false_negative": 3,
+        "true_positive": 52
+      }
+    },
+    "RAG": {
+      "precision": 0.6286,
+      "recall": 0.6286,
+      "f1": 0.6286,
+      "support": 35,
+      "confusion_matrix": {
+        "true_negative": 693,
+        "false_positive": 13,
+        "false_negative": 13,
+        "true_positive": 22
+      }
+    },
+    "Information Retrieval": {
+      "precision": 0.8854,
+      "recall": 0.9884,
+      "f1": 0.9341,
+      "support": 86,
+      "confusion_matrix": {
+        "true_negative": 644,
+        "false_positive": 11,
+        "false_negative": 1,
+        "true_positive": 85
+      }
+    },
+    "Data Science": {
+      "precision": 1.0,
+      "recall": 0.988,
+      "f1": 0.9939,
+      "support": 83,
+      "confusion_matrix": {
+        "true_negative": 658,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_positive": 82
+      }
+    },
+    "Programming": {
+      "precision": 0.9787,
+      "recall": 0.9892,
+      "f1": 0.984,
+      "support": 93,
+      "confusion_matrix": {
+        "true_negative": 646,
+        "false_positive": 2,
+        "false_negative": 1,
+        "true_positive": 92
+      }
+    },
+    "Web Development": {
+      "precision": 0.9778,
+      "recall": 0.8627,
+      "f1": 0.9167,
+      "support": 51,
+      "confusion_matrix": {
+        "true_negative": 689,
+        "false_positive": 1,
+        "false_negative": 7,
+        "true_positive": 44
+      }
+    },
+    "Databases": {
+      "precision": 1.0,
+      "recall": 0.9388,
+      "f1": 0.9684,
+      "support": 49,
+      "confusion_matrix": {
+        "true_negative": 692,
+        "false_positive": 0,
+        "false_negative": 3,
+        "true_positive": 46
+      }
+    },
+    "Cloud Computing": {
+      "precision": 1.0,
+      "recall": 0.9787,
+      "f1": 0.9892,
+      "support": 47,
+      "confusion_matrix": {
+        "true_negative": 694,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_positive": 46
+      }
+    },
+    "Cybersecurity": {
+      "precision": 0.9512,
+      "recall": 0.9512,
+      "f1": 0.9512,
+      "support": 41,
+      "confusion_matrix": {
+        "true_negative": 698,
+        "false_positive": 2,
+        "false_negative": 2,
+        "true_positive": 39
+      }
+    },
+    "Mathematics": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 45,
+      "confusion_matrix": {
+        "true_negative": 696,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_positive": 45
+      }
+    },
+    "Science": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 21,
+      "confusion_matrix": {
+        "true_negative": 720,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_positive": 21
+      }
+    },
+    "Business": {
+      "precision": 1.0,
+      "recall": 0.9677,
+      "f1": 0.9836,
+      "support": 31,
+      "confusion_matrix": {
+        "true_negative": 710,
+        "false_positive": 0,
+        "false_negative": 1,
+        "true_positive": 30
+      }
+    },
+    "Other": {
+      "precision": 1.0,
+      "recall": 0.9556,
+      "f1": 0.9773,
+      "support": 45,
+      "confusion_matrix": {
+        "true_negative": 696,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_positive": 43
+      }
+    },
+    "History": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 14,
+      "confusion_matrix": {
+        "true_negative": 727,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_positive": 14
+      }
+    }
+  },
+  "data_leakage_audit": {
+    "is_leak_free": true,
+    "exact_overlap": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "normalized_overlap": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "split_sizes": {
+      "train": 3458,
+      "validation": 741,
+      "test": 741
+    }
+  }
+}

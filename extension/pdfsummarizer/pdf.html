@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MemoryMind PDF Summarizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600;9..40,700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="pdf.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>MemoryMind PDF Summarizer</h1>
+
+      <section class="panel">
+        <label class="label">Select multiple PDFs</label>
+        <input id="pdf-input" type="file" accept="application/pdf" multiple />
+        <div id="pdf-list" class="pdf-list"></div>
+      </section>
+
+      <section class="panel">
+        <label class="label" for="summary-question">Topic / question</label>
+        <textarea
+          id="summary-question"
+          rows="2"
+          placeholder="e.g., Summarize the arguments and evidence about X across these PDFs"
+        ></textarea>
+        <button id="extract-button" class="primary" type="button">Extract text</button>
+        <button id="summarize-button" class="secondary" type="button" disabled>Synthesize & generate PDF</button>
+      </section>
+
+      <section class="panel">
+        <p id="status" class="status" role="status"></p>
+        <div id="error" class="error" hidden></div>
+      </section>
+    </div>
+
+    <script type="module" src="pdf.js"></script>
+  </body>
+</html>
