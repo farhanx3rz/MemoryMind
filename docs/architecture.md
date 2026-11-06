@@ -1,4 +1,4 @@
-# MemoryMind Technical Architecture
+﻿# MemoryMind Technical Architecture
 
 MemoryMind is an intelligent personal memory and research synthesis platform. It bridges a modern **Manifest V3 Chrome Extension** with a **FastAPI asynchronous backend**, integrating hybrid vector-lexical retrieval, fine-tuned transformer topic classification, multi-source document ingestion, and multi-provider LLM synthesis.
 
@@ -7,50 +7,96 @@ MemoryMind is an intelligent personal memory and research synthesis platform. It
 ## 1. High-Level Architecture
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph Client["Chrome Extension (Manifest V3)"]
-        UI["Popup Dashboard & Settings"]
-        SummUI["Multi-Source Summarizer UI"]
-        BG["Background Service Worker"]
-        API_JS["Client API Service (api.js)"]
-        UI --> API_JS
-        SummUI --> API_JS
-        BG --> API_JS
+        Popup["Popup UI: Ask / Remember / Settings"]
+        ResUI["Research UI: Multi-Source Summarizer"]
+        SW["Background Service Worker"]
+        APIClient["Client API Layer (api.js)"]
+        Popup --> APIClient
+        ResUI --> APIClient
+        SW --> APIClient
     end
 
     subgraph Backend["FastAPI Backend (Port 8000)"]
-        API["FastAPI REST & Streaming Router"]
-        Auth["API Key Auth Guard"]
-        Store["Memory Store & Hybrid Engine"]
-        LLM["LLM Provider Abstraction"]
-        ML["ML Pipeline (TopicClassifier)"]
-        Jobs["Summarization & Synthesis Engine"]
-        PDF["ReportLab PDF Generator"]
+        Router["REST & SSE Streaming Endpoints (/ask, /webpage, /memory, /jobs)"]
+        Auth["Security & Credential Masking"]
 
-        API --> Auth
-        Auth --> Store
-        Auth --> LLM
-        Auth --> Jobs
-        Store --> ML
-        Jobs --> Store
-        Jobs --> PDF
+        subgraph IngestionEngine["Web & PDF Ingestion"]
+            Extractor["Content Extraction (Trafilatura & PyPDF)"]
+            Chunker["Word-Window Chunking (220 words, 40 overlap)"]
+            Extractor --> Chunker
+        end
+
+        subgraph MLSubsystem["Machine Learning Pipeline"]
+            Classifier["DistilBERT Topic Classifier (17 Taxonomy Domains)"]
+            Embedder["Sentence Transformers (all-MiniLM-L6-v2)"]
+        end
+
+        subgraph HybridSearch["Hybrid Retrieval Engine (memory_store.py)"]
+            DenseScore["Dense Cosine Similarity (55%)"]
+            LexScore["SQLite BM25 Keyword Search (20%)"]
+            TopicScore["DistilBERT Topic Match (10%)"]
+            TagScore["Dynamic Concept Tag Match (15%)"]
+            ScoreFusion["Score Fusion & Source-Level Grouping"]
+            DenseScore --> ScoreFusion
+            LexScore --> ScoreFusion
+            TopicScore --> ScoreFusion
+            TagScore --> ScoreFusion
+        end
+
+        subgraph MultiSourceSynthesis["Multi-Source Summarization & Synthesis"]
+            Collector["Source Collector (URLs, Tabs, PDFs)"]
+            JobWorker["Background Async Job Manager"]
+            PDFGen["ReportLab PDF Generator"]
+            Collector --> JobWorker
+            JobWorker --> PDFGen
+        end
+
+        subgraph LLMGateway["Multi-Provider LLM Gateway"]
+            Sanitizer["Prompt Injection Defense (<untrusted_evidence>)"]
+            ProviderRouter["Provider Gateway (Grok, Gemini, OpenAI, Claude, Ollama, Offline)"]
+            Sanitizer --> ProviderRouter
+        end
     end
 
-    subgraph Storage["Persistent & Vector Storage"]
+    subgraph Storage["Databases & Caches"]
         Chroma[("ChromaDB Vector Store")]
         FTS[("SQLite FTS5 Lexical Index")]
-        JobStore[("Job Store (JSON & PDFs)")]
-        Store --> Chroma
-        Store --> FTS
-        Jobs --> JobStore
+        JobData[("Job Store & Generated PDFs")]
     end
 
-    subgraph External["External Services & Providers"]
-        HF["Hugging Face Hub (farhanx3rz/memorymind-classifier)"]
-        LLM_APIs["LLM Providers (Grok, OpenAI, Gemini, Claude, Ollama)"]
-        ML -.->|Auto-Download Weights| HF
-        LLM --> LLM_APIs
+    subgraph External["External Services"]
+        HFHub["Hugging Face Model Hub (farhanx3rz/memorymind-classifier)"]
+        AIProviders["External AI Provider APIs"]
     end
+
+    %% Connections
+    APIClient <--> Router
+    Router --> Auth
+    Auth --> IngestionEngine
+    Auth --> HybridSearch
+    Auth --> MultiSourceSynthesis
+
+    %% Ingestion flow
+    Chunker --> Classifier
+    Chunker --> Embedder
+    Classifier -.->|Auto-Download on Demand| HFHub
+    Embedder --> Chroma
+    Chunker --> FTS
+
+    %% Retrieval & Synthesis flow
+    HybridSearch <--> Chroma
+    HybridSearch <--> FTS
+    HybridSearch --> LLMGateway
+    LLMGateway --> AIProviders
+    AIProviders --> LLMGateway
+    LLMGateway --> Router
+
+    %% Summarization flow
+    JobWorker --> HybridSearch
+    JobWorker --> LLMGateway
+    PDFGen --> JobData
 ```
 
 ---
@@ -80,7 +126,7 @@ graph TD
   - Routes for `/health`, `/ask` (standard and SSE streaming), `/remember`, `/page`, `/jobs`, and `/provider/*`.
 - **Security & Provider Management (`config.py`):**
   - Server-side credential isolation: Provider API keys are never stored in the extension or returned in plain text via API responses.
-  - Key masking (`sk-••••••••abcd`) and transactional provider switching (test before commit).
+  - Key masking (`sk-â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢abcd`) and transactional provider switching (test before commit).
 - **Hybrid Retrieval Engine (`memory_store.py`):**
   - Combines four distinct signal channels into a unified relevance score:
     $$\text{Final Score} = 0.55 \cdot S_{\text{semantic}} + 0.20 \cdot S_{\text{keyword}} + 0.10 \cdot S_{\text{topic}} + 0.15 \cdot S_{\text{tag}}$$
@@ -138,7 +184,7 @@ sequenceDiagram
     API->>DB: Store embeddings (ChromaDB) & text (SQLite FTS5)
     DB-->>API: Document ID confirmed
     API-->>Ext: HTTP 200 {document_id, topics, tags}
-    Ext-->>User: Show "✓ Page saved · RAG · Databases"
+    Ext-->>User: Show "âœ“ Page saved Â· RAG Â· Databases"
 ```
 
 ---
@@ -165,5 +211,44 @@ sequenceDiagram
     end
     API-->>Ext: SSE event: done {"sources": [...], "related_concepts": [...]}
     Ext->>User: Displays source cards with relevance scores & deep links
+```
+
+---
+
+### 3.3 Multi-Source Research Summarization & PDF Generation
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Ext as Research Synthesizer UI
+    participant API as FastAPI Backend
+    participant Collector as Source Collector
+    participant Worker as Background Job Manager
+    participant LLM as Active LLM Provider
+    participant PDF as ReportLab PDF Engine
+
+    User->>Ext: Selects active tabs, URLs & uploads PDFs
+    Ext->>API: POST /jobs/create {sources, style, topic, length}
+    API->>Collector: Ingest and parse all selected sources
+    Collector-->>API: Unified extracted passages
+    API->>Worker: Enqueue background job (UUID)
+    API-->>Ext: HTTP 200 {job_id, status: "pending"}
+
+    loop Polling Status
+        Ext->>API: GET /jobs/{job_id}/status
+        API-->>Ext: {status: "processing", progress: 60}
+    end
+
+    Worker->>LLM: Synthesize executive summary & structured sections
+    LLM-->>Worker: Grounded multi-source synthesis text
+    Worker->>PDF: Generate formatted PDF report with bibliography
+    PDF-->>Worker: Compiled PDF artifact (backend/data/jobs/{id}.pdf)
+    Worker-->>API: Job marked "completed"
+
+    Ext->>API: GET /jobs/{job_id}/status -> "completed"
+    User->>Ext: Click "Download Research Report (PDF)"
+    Ext->>API: GET /jobs/{job_id}/pdf
+    API-->>Ext: application/pdf stream
+    Ext-->>User: Saved PDF report download
 ```
 

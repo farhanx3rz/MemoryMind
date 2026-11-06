@@ -131,12 +131,23 @@ renders the source links from the returned memory metadata.
 
 ## Endpoints
 
-| Endpoint | Purpose |
-|---|---|
-| `GET /health` | Liveness check. |
-| `POST /memory` | Save a selected text snippet. |
-| `POST /webpage` | Extract, chunk, classify, embed, and store a complete webpage. |
-| `POST /ask` | Retrieve relevant chunks and answer from them. |
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/health` | `GET` | Health check & service readiness check. |
+| `/memory` | `POST` | Save a selected text snippet into memory store. |
+| `/webpage` | `POST` | Extract, chunk, classify, embed, and store a complete webpage. |
+| `/memory/pdf` | `POST` | Extract, chunk, and index an uploaded multi-page PDF document. |
+| `/tags` | `GET` | Retrieve cached DistilBERT topics and concept tags for a URL. |
+| `/memory/{doc_id}/tags` | `GET` | Retrieve topics and dynamic tags by parent document ID. |
+| `/ask` | `POST` | Retrieve relevant chunks using hybrid fusion and synthesize answer. |
+| `/ask/stream` | `POST` | Server-Sent Events (SSE) streaming answers with stage updates & token events. |
+| `/jobs/create` | `POST` | Create asynchronous multi-source research summarization job. |
+| `/jobs/{job_id}/status` | `GET` | Poll research job processing status and progress percentage. |
+| `/jobs/{job_id}/pdf` | `GET` | Download compiled ReportLab PDF research report. |
+| `/provider/status` | `GET` | Inspect active AI provider status and credential masking. |
+| `/provider/test` | `POST` | Test connectivity with a selected AI provider credentials. |
+| `/provider/configure` | `POST` | Transactionally configure and save AI provider credentials. |
+| `/provider/remove` | `POST` | Disconnect and clear credentials for an AI provider. |
 
 ## Phase validation
 

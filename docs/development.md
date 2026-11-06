@@ -19,7 +19,7 @@ This guide provides step-by-step instructions for setting up, developing, testin
 
 ### 2.1 Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/MemoryMind.git
+git clone https://github.com/farhanx3rz/MemoryMind.git
 cd MemoryMind
 ```
 

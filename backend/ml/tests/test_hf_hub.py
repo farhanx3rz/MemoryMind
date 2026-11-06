@@ -52,6 +52,12 @@ class TestHuggingFaceHubIntegration(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_dir, ignore_errors=True)
+        try:
+            import transformers.utils.hub as t_hub
+            import huggingface_hub
+            t_hub.snapshot_download = huggingface_hub.snapshot_download
+        except Exception:
+            pass
 
     def test_validation_detects_valid_and_invalid_directories(self):
         # Empty directory should fail validation
