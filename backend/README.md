@@ -12,12 +12,12 @@ Webpage
   -> Clean Article/Text
   -> Chunking
   -> Topic Classification (DistilBERT)
-  -> Dynamic Tags (Grok, 3-8 concepts)
+  -> Dynamic Tags (Configured LLM, 3-8 concepts)
   -> Local Embeddings
   -> ChromaDB
   -> Hybrid Retrieval (semantic + keyword + topic + tag)
   -> Document/source grouping
-  -> Grok source-grouped RAG
+  -> Configured LLM source-grouped RAG
   -> Answer + source URL(s) + read times
 ```
 
@@ -74,7 +74,7 @@ Full-page ingestion stores one Chroma record per chunk. Every chunk carries:
 - parent document id
 - chunk index
 - DistilBERT topics
-- Grok dynamic tags
+- Dynamic tags (via configured LLM)
 
 Retrieval searches all stored chunks regardless of domain. Source metadata is
 returned with matches so an answer can be traced back to the original page.
@@ -83,8 +83,9 @@ returned with matches so an answer can be traced back to the original page.
 
 ## Dynamic tags
 
-Each selected memory or full webpage receives one Grok metadata extraction call
-when `DYNAMIC_TAGS_ENABLED=true`. Grok returns 3-8 concise concepts such as
+Each selected memory or full webpage receives one metadata extraction call
+when `DYNAMIC_TAGS_ENABLED=true` using the configured LLM provider (defaults
+to Grok `grok-4.7`). The LLM returns 3-8 concise concepts such as
 `ChromaDB`, `vector database`, `embeddings`, or `Docker`. These are stored
 separately from the fixed DistilBERT topic taxonomy.
 
@@ -122,10 +123,11 @@ python -m scripts.backfill_dynamic_tags
 Use `--dry-run` to inspect the generated tags first, or `--limit N` to process
 only a small number of parent documents while testing.
 
-## Grounded Grok RAG
+## Grounded RAG synthesis
 
-Grok receives only the top hybrid-ranked memories plus their source title/URL.
-The system prompt tells Grok to answer only from those memories and cite the
+The configured LLM (defaults to Grok `grok-4.7`, or Gemini, OpenAI, Claude, Ollama, none)
+receives only the top hybrid-ranked memories plus their source title/URL.
+The system prompt tells the LLM to answer only from those memories and cite the
 retrieved source numbers inline as `[1]`, `[2]`, etc. The Chrome extension also
 renders the source links from the returned memory metadata.
 
@@ -186,7 +188,7 @@ inventing successful results.
 
 The classifier is a genuinely fine-tuned Hugging Face Transformer with a
 multi-label sigmoid head. It classifies content, not websites or domains.
-Gemini is not used to produce tags.
+External LLMs are not used to produce topic tags; classification is performed entirely by the local DistilBERT model. Dynamic concept tags (separate from topics) are optionally extracted using the configured LLM provider.
 
 See `ml/README.md` for the training and evaluation pipeline.
 

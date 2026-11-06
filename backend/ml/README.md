@@ -4,11 +4,11 @@ This is the custom ML component of MemoryMind / RECALL. It fine-tunes a pretrain
 
 It is deliberately separate from the RAG stack:
 
-- **Topic classifier:** assigns explicit topic/tag probabilities.
-- **Sentence Transformer:** creates semantic vectors for retrieval.
-- **Gemini:** generates the final natural-language answer from retrieved evidence.
+- **Topic classifier (`distilbert-base-uncased`):** assigns explicit topic/tag probabilities across a 17-label technical taxonomy locally on CPU.
+- **Sentence Transformer (`all-MiniLM-L6-v2`):** creates dense 384-dimensional semantic vectors for ChromaDB cosine similarity retrieval.
+- **Configured LLM Gateway:** generates the final natural-language answer grounded strictly in retrieved evidence (supporting Grok default, Gemini, OpenAI, Anthropic Claude, Ollama, or Offline / Echo mode), and can optionally extract dynamic concept tags when enabled.
 
-Gemini is not used to create tags.
+External LLMs are not used to generate topic taxonomy tags; classification runs 100% locally via the fine-tuned DistilBERT model.
 
 ## Model
 

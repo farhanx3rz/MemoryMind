@@ -1,4 +1,4 @@
-﻿# MemoryMind Technical Architecture
+# MemoryMind Technical Architecture
 
 MemoryMind is an intelligent personal memory and research synthesis platform. It bridges a modern **Manifest V3 Chrome Extension** with a **FastAPI asynchronous backend**, integrating hybrid vector-lexical retrieval, fine-tuned transformer topic classification, multi-source document ingestion, and multi-provider LLM synthesis.
 
@@ -123,10 +123,10 @@ flowchart TD
 ### 2.2 FastAPI Backend (`backend/app/`)
 - **Main Application (`main.py`):**
   - Asynchronous lifespan preloading for ML models and ChromaDB clients.
-  - Routes for `/health`, `/ask` (standard and SSE streaming), `/remember`, `/page`, `/jobs`, and `/provider/*`.
+  - Routes for `/health`, `/ask` (standard and SSE streaming), `/memory`, `/webpage`, `/memory/pdf`, `/jobs/*`, and `/provider/*`.
 - **Security & Provider Management (`config.py`):**
   - Server-side credential isolation: Provider API keys are never stored in the extension or returned in plain text via API responses.
-  - Key masking (`sk-â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢abcd`) and transactional provider switching (test before commit).
+  - Key masking (`sk-••••••••abcd`) and transactional provider switching (test before commit).
 - **Hybrid Retrieval Engine (`memory_store.py`):**
   - Combines four distinct signal channels into a unified relevance score:
     $$\text{Final Score} = 0.55 \cdot S_{\text{semantic}} + 0.20 \cdot S_{\text{keyword}} + 0.10 \cdot S_{\text{topic}} + 0.15 \cdot S_{\text{tag}}$$
@@ -171,7 +171,7 @@ sequenceDiagram
     participant DB as ChromaDB & SQLite FTS
 
     User->>Ext: Click "Remember current page"
-    Ext->>API: POST /page {url, html}
+    Ext->>API: POST /webpage {url, html}
     API->>API: Extract clean text & title (Trafilatura)
     API->>API: Chunk into word windows (220 words, 40 overlap)
     par Topic Classification
@@ -184,7 +184,7 @@ sequenceDiagram
     API->>DB: Store embeddings (ChromaDB) & text (SQLite FTS5)
     DB-->>API: Document ID confirmed
     API-->>Ext: HTTP 200 {document_id, topics, tags}
-    Ext-->>User: Show "âœ“ Page saved Â· RAG Â· Databases"
+    Ext-->>User: Show "✓ Page saved · RAG · Databases"
 ```
 
 ---
@@ -200,7 +200,7 @@ sequenceDiagram
     participant LLM as Active LLM
 
     User->>Ext: Enters question & clicks "Ask"
-    Ext->>API: GET /ask/stream?question=... (SSE)
+    Ext->>API: POST /ask/stream {question} (SSE)
     API->>DB: Query Hybrid Retrieval (Dense + FTS + Topics + Tags)
     DB-->>API: Top-K source passages with metadata
     API->>LLM: Stream prompt with context passages & citation guidelines
