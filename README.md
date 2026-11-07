@@ -436,5 +436,7 @@ pytest backend/ml/tests/ backend/app/tests/ -v
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
+---
+
 - **Author:** Farhan ([@farhanx3rz](https://huggingface.co/farhanx3rz))
 - **Topic Classifier:** [`farhanx3rz/memorymind-classifier`](https://huggingface.co/farhanx3rz/memorymind-classifier)
